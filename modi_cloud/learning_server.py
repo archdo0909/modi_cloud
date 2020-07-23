@@ -136,6 +136,23 @@ class Data_model_handler(pb2_grpc.Data_Model_HandlerServicer):
             user_param is not None
         )
 
+    def __check_gpu_memory_used(self, gpu_num=0):
+        """
+        Input : gpu_num (tagged number in case of multi-gpu environment)
+        Returns the occupied Memory 
+        """
+        
+        return gpustat.GPUStatCollection.new_query()[gpu_num]['memory.used']
+
+    def __check_gpu_memory_total(self,gpu_num=0):
+        """
+        Returns the total available Memory
+        """
+
+        return gpustat.GPUStatCollection.new_query()[gpu_num]
+
+
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), options=[
         ('grpc.max_send_message_length', MESSAGE_SIZE),
